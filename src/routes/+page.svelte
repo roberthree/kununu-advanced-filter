@@ -122,7 +122,16 @@
 
 	let fetching_kununu_data = false;
 
-	async function fetch_kununu_data(event: MouseEvent) {
+	async function process_fetching_request(event: MouseEvent): Promise<void> {
+		if (fetching_kununu_data) {
+			fetching_kununu_data = false;
+		} else {
+			fetch_kununu_data();
+		}
+	}
+
+	async function fetch_kununu_data(): Promise<void> {
+		console.assert(!fetching_kununu_data);
 		fetching_kununu_data = true;
 		db.kununu_top_companies.clear();
 		let keywords: string[] = [];
@@ -137,11 +146,10 @@
 		num_pages = pagination.num_pages;
 		// num_pages = 3;
 		console.assert(window.indexedDB);
-		for (page = 1; page <= num_pages; ++page) {
+		for (page = 1; fetching_kununu_data && page <= num_pages; ++page) {
 			const data = await fetch_page(keywords, page) as Record<string, any>;
 			await data["data"].forEach(add_company_data);
 		}
-		page = num_pages
 		fetching_kununu_data = false;
 	}
 </script>
@@ -197,7 +205,7 @@
 						</Select>
 					</div>
 
-					<Button class="w-80" on:click={fetch_kununu_data} bind:disabled={fetching_kununu_data} size="sm">
+					<Button class="w-80" on:click={process_fetching_request} bind:outline={fetching_kununu_data} size="sm">
 						{#if fetching_kununu_data}
 							<Spinner class="mr-3" size="4" color="white" />
 							Fetching from Kununu ({page}/{num_pages})
