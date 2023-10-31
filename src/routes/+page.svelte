@@ -154,8 +154,8 @@
 	}
 </script>
 
-<div class="flex flex-col space-y-4 p-4">
-	<div class="flex flex-col space-y-4">
+<div class="flex flex-col gap-4 p-4">
+	<div class="flex flex-col gap-4">
 		<h1 class="inline-block text-2xl font-extrabold text-slate-900 tracking-tight">Advanced Filter for Kununu's Top Companies</h1>
 
 		<p class="border shadow-lg rounded-lg p-4">
@@ -168,14 +168,14 @@
 		</p>
 	</div>
 
-	<div class="flex flex-row space-x-4">
+	<div class="flex flex-row flex-wrap gap-4">
 		<div class="border shadow-lg rounded-lg p-4">
-			<div class="flex flex-col space-y-2">
+			<div class="flex flex-col gap-2">
 				{#await data.kununu_filter_keywords}
 					<Spinner />
 					Fetching Kununu keywords...
 				{:then kununu_filter_keywords}
-					<div class="flex flex-col space-y-1">
+					<div class="flex flex-col gap-1">
 						<Label for="kununu_filter_industry">Industry</Label>
 						<Select id="kununu_filter_industry" bind:value={kununu_filter_keyword.industry} bind:disabled={fetching_kununu_data} placeholder="" size="sm">
 							<!-- <option selected value="">Include all</option> -->
@@ -185,7 +185,7 @@
 						</Select>
 					</div>
 
-					<div class="flex flex-col space-y-1">
+					<div class="flex flex-col gap-1">
 						<Label for="kununu_filter_company_size">Company size</Label>
 						<Select id="kununu_filter_company_size" bind:value={kununu_filter_keyword.company_size} bind:disabled={fetching_kununu_data} placeholder="" size="sm">
 							<option selected value="">Include all</option>
@@ -195,7 +195,7 @@
 						</Select>
 					</div>
 
-					<div class="flex flex-col space-y-1">
+					<div class="flex flex-col gap-1">
 						<Label for="kununu_filter_country">Country</Label>
 						<Select id="kununu_filter_country" bind:value={kununu_filter_keyword.country} bind:disabled={fetching_kununu_data} placeholder="" size="sm">
 							<option selected value="">Include all</option>
@@ -221,19 +221,19 @@
 
 		<!-- flex flex-col justify-center items-start p-4 sm:p-8 mb-8 gap-4 border shadow-lg rounded-lg dark:bg-gray-800 dark:border-gray-700 -->
 
-		<div class="border shadow-lg rounded-lg p-4">
+		<div class="flex flex-col gap-2 border shadow-lg rounded-lg p-4">
 			{#each numeric_filters as numeric_filter}
-			<div>
+			<div class="flex flex-col">
 				<h3>{numeric_filter.name}</h3>
-				<div class="flex space-x-4">
-					<div class="flex space-x-2">
-						<Label class="label" for="{numeric_filter.key}_min">min</Label>
-						<Input class="input min-w-16" name="{numeric_filter.key}_min" type="number" step="1" bind:value={numeric_filter.min_value} size="sm" />
-						<Label class="label" for="{numeric_filter.key}_max">max</Label>
-						<Input class="input min-w-16" name="{numeric_filter.key}_max" type="number" step="1" bind:value={numeric_filter.max_value} size="sm" />
+				<div class="flex flex-row flex-wrap gap-2">
+					<div class="flex gap-2">
+						<Label for="{numeric_filter.key}_min">min</Label>
+						<Input class="" name="{numeric_filter.key}_min" type="number" step="1" bind:value={numeric_filter.min_value} size="sm" />
+						<Label for="{numeric_filter.key}_max">max</Label>
+						<Input class="" name="{numeric_filter.key}_max" type="number" step="1" bind:value={numeric_filter.max_value} size="sm" />
 					</div>
-					<div class="flex space-x-2">
-						<Select class="min-w-16" bind:value={numeric_filter.sort_priority} placeholder="" size="sm">
+					<div class="flex gap-2">
+						<Select class="min-w-[6.5em]" bind:value={numeric_filter.sort_priority} placeholder="" size="sm">
 							{#each [1, 2, 3, 4] as sort_priority}
 								<option value={sort_priority}>sort {sort_priority}.</option>
 							{/each}
