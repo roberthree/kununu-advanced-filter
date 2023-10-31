@@ -2,7 +2,7 @@
 	import { kununu_search_url, fetch_page, fetch_pagination } from '$lib/kununu';
 	import { db, type KununuCompany } from "$lib/db";
 	import { liveQuery } from "dexie";
-	import { Label, Button, Select, Input, Checkbox, Spinner, Toast } from 'flowbite-svelte';
+	import { Label, Button, Select, Input, Checkbox, Spinner } from 'flowbite-svelte';
 	import {  } from 'flowbite-svelte-icons';
 
 	import KununuCompanyTable from '$lib/KununuCompanyTable.svelte';
@@ -23,8 +23,8 @@
 	interface NumericFilter {
 		key: keyof KununuCompany;
 		name: string;
-		min_value: number | undefined;
-		max_value: number | undefined;
+		min_value: string;
+		max_value: string;
 		sort_priority: number;
 		sort_descending: boolean;
 	}
@@ -33,32 +33,32 @@
 		{
 			key: 'num_reviews',
 			name: 'Number of Reviews',
-			min_value: undefined,
-			max_value: undefined,
+			min_value: '',
+			max_value: '',
 			sort_priority: 2,
 			sort_descending: true,
 		} satisfies NumericFilter,
 		{
 			key: 'kununu_score',
 			name: 'Kununu Score',
-			min_value: undefined,
-			max_value: undefined,
+			min_value: '',
+			max_value: '',
 			sort_priority: 1,
 			sort_descending: true,
 		} satisfies NumericFilter,
 		{
 			key: 'salary_satisfaction',
 			name: 'Salary Satisfaction',
-			min_value: undefined,
-			max_value: undefined,
+			min_value: '',
+			max_value: '',
 			sort_priority: 4,
 			sort_descending: true,
 		} satisfies NumericFilter,
 		{
 			key: 'recommendation_rate',
 			name: 'Recommendation Rate',
-			min_value: undefined,
-			max_value: undefined,
+			min_value: '',
+			max_value: '',
 			sort_priority: 3,
 			sort_descending: true,
 		} satisfies NumericFilter,
@@ -70,13 +70,19 @@
 			.filter(
 				kununu_company => numeric_filters.map(
 					numeric_filter => {
-						const value_min = numeric_filter.min_value ?? Number.MIN_VALUE
-						const value_max = numeric_filter.max_value ?? Number.MAX_VALUE
-						const value = kununu_company[numeric_filter.key]
+						const value_min = parseFloat(numeric_filter.min_value);
+						const value_max = parseFloat(numeric_filter.max_value);
+						const value = kununu_company[numeric_filter.key];
+						// console.log(`value_min = ${value_min}`);
+						// console.log(`value_max = ${value_max}`);
+						// console.log(`value = ${value}`);
 						if (typeof(value) != 'number') {
 							throw TypeError(`kununu_company[${numeric_filter.key}] = ${value} is not a number`);
 						}
-						return value_min <= value && value <= value_max
+						return (
+							(isNaN(value_min) ? Number.MIN_VALUE : value_min) <= value
+							&& value <= (isNaN(value_max) ? Number.MAX_VALUE : value_max)
+						)
 					}
 				).every(Boolean)
 			)
